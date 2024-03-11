@@ -1,7 +1,201 @@
-<html>
-	<head>
-	</head>
-	<body>
-		Homework 2 index.html here
-	</body>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<style>
+  body {
+    padding: 100px;
+    width: 1000px;
+    margin: auto;
+    text-align: left;
+    font-weight: 300;
+    font-family: 'Open Sans', sans-serif;
+    color: #121212;
+  }
+  h1, h2, h3, h4 {
+    font-family: 'Source Sans Pro', sans-serif;
+  }
+</style>
+<title>CS 184/284A Meshedit</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link href="https://fonts.googleapis.com/css?family=Open+Sans|Source+Sans+Pro" rel="stylesheet">
+</head>
+
+
+<body>
+
+<h1 align="middle">CS 184/284A: Computer Graphics and Imaging, Spring 2024</h1>
+<h1 align="middle">Homework 2: Mesh Editor</h1>
+<h2 align="middle">Eugene Han</h2>
+
+<br><br>
+
+<div>
+
+<h2 align="middle">Overview</h2>
+<p>In this assignment, I've developed a comprehensive graphics system incorporating various algorithms and operations essential for mesh manipulation and visualization. Drawing inspiration from the interactive mesh editing tool provided at the mentioned link, I've implemented functionalities including De Casteljau's algorithm for Bezier curve and surface evaluation, area-weighted vertex normals for improved shading, edge flip and split operations for mesh refinement, and Loop subdivision for mesh smoothing.
+
+</p>
+
+<h2 align="middle">Section I: Bezier Curves and Surfaces</h2>
+
+<h3 align="middle">Part 1: Bezier curves with 1D de Casteljau subdivision</h3>
+
+<p>De Casteljau's algorithm is a powerful technique used for evaluating Bezier curves by recursively dividing control points. I've applied this algorithm to compute points along Bezier curves based on user-defined control points. Screenshots illustrate the step-by-step evaluation process, providing insight into how the curve is constructed.
+
+</p>
+
+<div align="middle">
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="images/1.png" align="middle" width="400px"/>
+      </td>
+      <td>
+        <img src="images/2.png" align="middle" width="400px"/>
+      </td>
+    </tr>
+    <br>
+    <tr>
+      <td>
+        <img src="images/3.png" align="middle" width="400px"/>
+      </td>
+      <td>
+        <img src="images/4.png" align="middle" width="400px"/>
+      </td>
+    </tr>
+	<tr>
+		<td>
+		  <img src="images/5.png" align="middle" width="400px"/>
+		</td>
+	  </tr>
+  </table>
+</div>
+
+
+<h3 align="middle">Part 2: Bezier surfaces with separable 1D de Casteljau</h3>
+
+<p>Expanding De Casteljau's algorithm to Bezier surfaces, I've implemented a method to evaluate complex surfaces. Utilizing this extension, I've evaluated the teapot model provided, showcasing the versatility of the algorithm in handling intricate surface geometries</p>
+
+<div align="middle">
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="images/6.png" align="middle" width="400px"/>
+      </td>
+      <td>
+        <img src="images/7.png" align="middle" width="400px"/>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<h2 align="middle">Section II: Triangle Meshes and Half-Edge Data Structure</h2>
+
+<h3 align="middle">Part 3: Area-weighted vertex normals</h3>
+
+
+<p> To enhance mesh shading, I've integrated area-weighted vertex normals into the system. Screenshots compare shading on the teapot model with and without vertex normals, demonstrating the significant improvement in visual quality achieved through this technique
+</p>
+
+<div align="middle">
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="images/8.png" align="middle" width="400px"/>
+      </td>
+      <td>
+        <img src="images/9.png" align="middle" width="400px"/>
+      </td>
+    </tr>
+    
+  </table>
+</div>
+
+<h3 align="middle">Part 4: Edge flip</h3>
+
+<p> The edge flip operation is a fundamental tool for improving mesh topology. I've implemented this operation by manually implementing the modifications for each vertex and edge and provided before-and-after screenshots to showcase its impact on mesh geometry. Additionally, I've shared insights into the debugging process and any tricks utilized to ensure the operation's correctness.
+</p>
+
+<div align="middle">
+	<table style="width=100%">
+	  <tr>
+		<td>
+		  <img src="images/10.png" align="middle" width="500px"/>
+		</td>
+		<td>
+		<img src="images/11.png" align="middle" width="500px"/>
+		</td>
+	  </tr>	  
+	</table>
+  </div>
+
+
+<h3 align="middle">Part 5: Edge Split</h3>
+
+<p> Introducing the edge split operation, I've enabled users to refine mesh topology further. I've implemented this feature by manually setting the vertices and edges when edge split occurs. Screenshots illustrate the effects of edge splits and combinations of edge splits and flips on mesh structure. Additionally, I've discussed debugging techniques and addressed considerations for handling boundary edges.
+</p>
+
+<div align="middle">
+	<table style="width=100%">
+	  <tr>
+		<td>
+		  <img src="images/14.png" align="middle" width="400px"/>
+		  <figcaption align="middle">Default </figcaption>
+		</td>
+		<td>
+		  <img src="images/12.png" align="middle" width="400px"/>
+		  <figcaption align="middle">Splits only </figcaption>
+		</td>
+	  </tr>
+	  <br>
+	  <tr>
+		<td>
+		  <img src="images/14.png" align="middle" width="400px"/>
+		  <figcaption align="middle">Default</figcaption>
+		</td>
+		<td>
+		  <img src="images/13.png" align="middle" width="400px"/>
+		  <figcaption align="middle">Splits and flips</figcaption>
+		</td>
+	  </tr>
+	</table>
+  </div>
+
+
+  
+<h3 align="middle">Part 6: Loop subdivision for mesh upsampling</h3>
+<p> Loop subdivision is a powerful tool for refining mesh geometry while preserving key features. I've implemented this technique by following through the instructions provided in the starter code: combining all functions together with manual settings of vertices and edges for upsampling. 
+	I eventually was able to provide observations on its effects, including changes to sharp corners and edges. Screenshots demonstrate the iterative subdivision process and discuss strategies for mitigating asymmetry effects through pre-processing with edge flips and splits. 
+</p>
+<div align="middle">
+	<table style="width=100%">
+	  <tr>
+		<td>
+		  <img src="images/15.jpeg" align="middle" width="400px"/>
+		  <figcaption align="middle">Loop subdivision algorithm visualized  </figcaption>
+		</td>
+	  </tr>
+	  <br>
+	  <p> My attempts </p>
+	  <tr>
+		<td>
+		  <img src="images/16.png" align="middle" width="400px"/>
+		</td>
+		<td>
+		  <img src="images/17.png" align="middle" width="400px"/>
+		</td>
+	  </tr>
+	  <tr>
+		<td>
+		  <img src="images/18.png" align="middle" width="400px"/>
+		</td>
+		<td>
+		  <img src="images/19.png" align="middle" width="400px"/>
+		</td>
+	  </tr>
+	</table>
+  </div>
+  
+
+</body>
 </html>
