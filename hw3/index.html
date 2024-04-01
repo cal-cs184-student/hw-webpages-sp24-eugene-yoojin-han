@@ -1,7 +1,262 @@
-<html>
-	<head>
-	</head>
-	<body>
-		Homework 3 index.html here
-	</body>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<style>
+  body {
+    padding: 100px;
+    width: 1000px;
+    margin: auto;
+    text-align: left;
+    font-weight: 300;
+    font-family: 'Open Sans', sans-serif;
+    color: #121212;
+  }
+  h1, h2, h3, h4 {
+    font-family: 'Source Sans Pro', sans-serif;
+  }
+</style>
+<title>CS 184/284A Rasterizer</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link href="https://fonts.googleapis.com/css?family=Open+Sans|Source+Sans+Pro" rel="stylesheet">
+</head>
+
+
+<body>
+
+<h1 align="middle">CS 184/284A: Computer Graphics and Imaging, Spring 2024</h1>
+<h1 align="middle">Homework 3: Pathtracer</h1>
+<h2 align="middle">Eugene Han</h2>
+
+<br><br>
+
+<div>
+
+<h2 align="middle">Overview</h2>
+<p>The task involves implementing a physically-based renderer using a path tracing algorithm, which encompasses various fundamental concepts in computer graphics. This endeavor entails generating primary rays from a virtual camera into a scene, testing these rays for intersections with scene geometry, and accurately simulating the interactions of light with materials. From shading surfaces with different material properties to computing both direct and indirect lighting effects, the renderer must traverse rays through the scene, integrating contributions from light sources and multiple light bounces. To optimize rendering efficiency, acceleration structures such as bounding volume hierarchies (BVH) will be employed to speed up intersection tests. Throughout the implementation process, attention to detail in ray-object intersection algorithms, material models, and light transport simulations will be crucial in producing realistic images with convincing lighting and shading. Additionally, exploring advanced techniques like Monte Carlo integration, importance sampling, and optimization strategies will further refine the renderer's capabilities, paving the way for high-quality, visually appealing renderings.</p>
+
+<h3 align="middle">Part 1: Ray Generation and Scene Intersection</h3>
+
+<p>Ray Generation: In the rendering pipeline, ray generation involves casting rays from the camera into the scene. Typically, a ray is defined by its origin (the camera's position) and a direction (from the camera through a pixel in the image plane). These rays form the basis for tracing the paths of light in the scene.
+
+	Primitive Intersection: Once rays are generated, they are tested for intersection with the primitives in the scene. Primitives can be geometric shapes like triangles, spheres, or more complex objects. The intersection test determines whether a ray intersects with any primitives in the scene and if so, at what point along the ray's path.
+	
+	Triangle Intersection Algorithm:
+	The triangle intersection algorithm determines if a ray intersects with a triangle in 3D space. Here's a simplified explanation of the algorithm:
+	
+	For each triangle in the scene, compute its normal vector and a plane equation (often using the vertices).
+	Given a ray, calculate its intersection with the plane containing the triangle using ray-plane intersection equations.
+	Check if the intersection point lies within the triangle's boundaries by calculating barycentric coordinates.
+	If the intersection point is inside the triangle, compute attributes like texture coordinates and surface normals for shading.
+</p>
+
+<div align="middle">
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="images/1.png" align="middle" width="400px"/>
+        <figcaption align="middle">Render time: 130 seconds. </figcaption>
+      </td>
+      <td>
+        <img src="images/2.png" align="middle" width="400px"/>
+        <figcaption align="middle">Render time: 4 seconds. </figcaption>
+      </td>
+    </tr>
+  </table>
+</div>
+
+
+<h3 align="middle">Part 2: Bounding Volume Hierarchy</h3>
+
+<p> BVH Construction Algorithm:
+	BVH (Bounding Volume Hierarchy) construction involves recursively partitioning the scene's primitives into bounding volumes (e.g., axis-aligned bounding boxes) to accelerate ray intersection tests. A common heuristic for splitting primitives is to choose the split point that minimizes the cost function, often based on the surface area heuristic (SAH). SAH aims to minimize the cost of traversal and intersection within the BVH tree.
+	
+	Rendering with BVH acceleration typically speeds up rendering for scenes with complex geometries by reducing the number of intersection tests required. Rendering times with BVH acceleration on moderately complex scenes show significant improvements in rendering speed.
+</p>
+
+<div align="middle">
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="images/3.png" align="middle" width="400px"/>
+        <figcaption align="middle">Render time: 0.24 seconds. </figcaption>
+      </td>
+      <td>
+        <img src="images/4.png" align="middle" width="400px"/>
+        <figcaption align="middle">Render time: 0.19 seconds. </figcaption>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<h3 align="middle">Part 3: Direct Illumination</h3>
+
+
+<p> Direct lighting computation involves simulating the contribution of light sources directly to the visible surfaces in the scene. There are different implementations of direct lighting, including techniques like Monte Carlo integration and importance sampling. These methods calculate the direct illumination received by each surface point from light sources in the scene.
+
+	Comparing noise levels in soft shadows between uniform hemisphere sampling and light sampling involves analyzing the quality of shadows rendered using different sampling strategies. Here, light sampling produces smoother, more realistic shadows compared to uniform hemisphere sampling, particularly in scenes with area lights and complex lighting environments.
+</p>
+
+<div align="middle">
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="images/5.png" align="middle" width="400px"/>
+        <figcaption align="middle">Hemisphere sampling.</figcaption>
+      </td>
+      <td>
+        <img src="images/6.png" align="middle" width="400px"/>
+        <figcaption align="middle">Importance sampling.</figcaption>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <img src="images/7.png" align="middle" width="400px"/>
+        <figcaption align="middle">1 light ray.</figcaption>
+      </td>
+      <td>
+        <img src="images/8.png" align="middle" width="400px"/>
+        <figcaption align="middle">4 light rays.</figcaption>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <img src="images/9.png" align="middle" width="400px"/>
+        <figcaption align="middle">16 light rays.</figcaption>
+      </td>
+      <td>
+        <img src="images/10.png" align="middle" width="400px"/>
+        <figcaption align="middle">64 light rays.</figcaption>
+      </td>
+    </tr>
+    
+  </table>
+</div>
+
+
+<h3 align="middle">Part 4: Global Illumination</h3>
+
+<p> Indirect lighting computation simulates the indirect illumination received by surfaces in the scene due to light bouncing off other surfaces. Techniques like path tracing or photon mapping are commonly used to compute indirect lighting, considering factors such as surface properties, light transport, and global illumination effects.
+
+	Comparing rendered views with different max_ray_depth settings involves analyzing how increasing the maximum ray depth affects the quality of indirect lighting and overall image realism. Russian Roulette rendering with varying max_ray_depth values allows for controlling the termination probability of rays, which can impact rendering efficiency and noise levels.
+	
+	
+</p>
+
+<div align="middle">
+	<table style="width=100%">
+	  <tr>
+		<td>
+		  <img src="images/13.png" align="middle" width="500px"/>
+		  <figcaption align="middle"> Direct  </figcaption>
+		</td>
+    <td>
+		  <img src="images/14.png" align="middle" width="400px"/>
+		  <figcaption align="middle">Indirect.</figcaption>
+		</td>
+	  </tr>	  
+    <tr>
+      <td>
+        <img src="images/15.png" align="middle" width="400px"/>
+        <figcaption align="middle">Depth of 0.</figcaption>
+      </td>
+      <td>
+        <img src="images/16.png" align="middle" width="400px"/>
+        <figcaption align="middle">Depth of 1.</figcaption>
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        <img src="images/17.png" align="middle" width="400px"/>
+        <figcaption align="middle">Depth of 2.</figcaption>
+      </td>
+      <td>
+        <img src="images/18.png" align="middle" width="400px"/>
+        <figcaption align="middle">Depth of 3.</figcaption>
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        <img src="images/19.png" align="middle" width="400px"/>
+        <figcaption align="middle">1 samples per pixel.</figcaption>
+      </td>
+      <td>
+        <img src="images/20.png" align="middle" width="400px"/>
+        <figcaption align="middle">2 samples per pixel.</figcaption>
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        <img src="images/21.png" align="middle" width="400px"/>
+        <figcaption align="middle">4 samples per pixel.</figcaption>
+      </td>
+    
+      <td>
+        <img src="images/22.png" align="middle" width="400px"/>
+        <figcaption align="middle">8 samples per pixel.</figcaption>
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        <img src="images/23.png" align="middle" width="400px"/>
+        <figcaption align="middle">16 samples per pixel.</figcaption>
+      </td>
+
+      <td>
+        <img src="images/24.png" align="middle" width="400px"/>
+        <figcaption align="middle">64 samples per pixel.</figcaption>
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        <img src="images/25.png" align="middle" width="400px"/>
+        <figcaption align="middle">512 samples per pixel.</figcaption>
+      </td>
+
+      <td>
+        <img src="images/26.png" align="middle" width="400px"/>
+        <figcaption align="middle">1024 samples per pixel.</figcaption>
+      </td>
+    </tr>
+	</table>
+  </div>
+
+  <div align="middle">
+	<table style="width=100%">
+	  <tr>
+		
+	  </tr>	  
+	</table>
+  </div>
+
+<h3 align="middle">Part 5: Adaptive Sampling</h3>
+
+<p> Adaptive sampling dynamically adjusts the number of samples per pixel based on image properties such as local contrast, gradients, and noise levels. It aims to allocate more samples to regions with high variance or detail, while reducing samples in smoother areas to optimize rendering efficiency and quality.
+
+	Implementing adaptive sampling involves analyzing pixel neighborhoods or image patches to determine sampling rates dynamically during rendering. By adapting sampling rates based on local image characteristics, adaptive sampling can improve rendering efficiency and produce higher-quality images with reduced noise.
+	
+	Rendering scenes with adaptive sampling and comparing sample rate images with noise-free rendered results showcases how adaptive sampling optimizes sampling distribution across the image to achieve desired rendering quality efficiently.
+</p>
+
+<div align="middle">
+	<table style="width=100%">
+	  <tr>
+		<td>
+		  <img src="images/11.png" align="middle" width="400px"/>
+		  <figcaption align="middle"></figcaption>
+		</td>
+		<td>
+		  <img src="images/12.png" align="middle" width="400px"/>
+		  <figcaption align="middle"></figcaption>
+		</td>
+	  </tr>
+	  <br>
+	</table>
+  </div>
+  
+</body>
 </html>
