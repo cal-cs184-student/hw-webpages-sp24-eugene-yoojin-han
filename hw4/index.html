@@ -1,7 +1,307 @@
-<html>
-	<head>
-	</head>
-	<body>
-		Homework 4 index.html here
-	</body>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<style>
+  body {
+    padding: 100px;
+    width: 1000px;
+    margin: auto;
+    text-align: left;
+    font-weight: 300;
+    font-family: 'Open Sans', sans-serif;
+    color: #121212;
+  }
+  h1, h2, h3, h4 {
+    font-family: 'Source Sans Pro', sans-serif;
+  }
+</style>
+<title>CS 184/284A Rasterizer</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link href="https://fonts.googleapis.com/css?family=Open+Sans|Source+Sans+Pro" rel="stylesheet">
+</head>
+
+
+<body>
+
+<h1 align="middle">CS 184/284A: Computer Graphics and Imaging, Spring 2024</h1>
+<h1 align="middle">Homework 4: Cloth Simulator</h1>
+<h2 align="middle">Eugene Han</h2>
+
+<br><br>
+
+<div>
+
+<h2 align="middle">Overview</h2>
+<p>
+	Clothsim examines diverse aspects of cloth simulation, organized into multiple segments. In Part 1, I introduce masses and springs, displaying wireframe images featuring various constraints. Part 2 delves into numerical integration simulations, illustrating the influence of parameters such as spring constant, damping, and density on cloth behavior. Part 3 emphasizes collision handling with other objects, demonstrating the impact of different spring constants. Part 4 deals with self-collisions, presenting scenarios of cloth falling with varying densities and spring constants. Part 5 explores shader programs, encompassing the Blinn-Phong shading model, texture mapping, bump mapping, and mirror shader effects, showcasing their visual outcomes and computational intricacies. Overall, the implementation process proceeded smoothly for me.
+</p>
+<h3 align="middle">Part 1: Masses and Springs</h3>
+
+<p></p>
+
+<div align="middle">
+  <table style="width=100%">
+	<td>
+		<img src="images/4.png" align="middle" width="400px"/>
+		<figcaption align="middle">scene/pinned2.json </figcaption>
+	</td>
+    <tr>
+		
+      <td>
+        <img src="images/1.png" align="middle" width="400px"/>
+        <figcaption align="middle">Structural </figcaption>
+      </td>
+      <td>
+        <img src="images/2.png" align="middle" width="400px"/>
+        <figcaption align="middle">Shearing </figcaption>
+      </td>
+    </tr>
+	<tr>
+		<td>
+		  <img src="images/3.png" align="middle" width="400px"/>
+		  <figcaption align="middle">All </figcaption>
+		</td>
+		
+	  </tr>
+  </table>
+</div>
+
+
+<h3 align="middle">Part 2: Simulation via Numerical Integration</h3>
+
+<p> The cloth simulation exhibits a sluggish behavior with a low spring constant, as the cloth stretches effortlessly and lacks a swift recoil. In contrast, a high spring constant makes the cloth more rigid, as it strongly resists deformation, leading to less movement and increased stiffness in the cloth's structure.
+</p>
+<div align="middle">
+	<table style="width=100%">
+	  <tr>
+		<td>
+		  <img src="images/5.png" align="middle" width="400px"/>
+		  <figcaption align="middle"> Low KS </figcaption>
+		</td>
+		<td>
+		  <img src="images/6.png" align="middle" width="400px"/>
+		  <figcaption align="middle">High KS </figcaption>
+		</td>
+	  </tr>
+	</table>
+  </div>
+<p>Cloth with lower density feels lighter and thus appears smoother at the point where gravity acts. However, cloth with high desnity feels heavier and is less affected by external forces. Its greater weight due to gravity creates more folds in the middle.</p>3
+<div align="middle">
+	<table style="width=100%">
+	  <tr>
+		<td>
+		  <img src="images/8.png" align="middle" width="400px"/>
+		  <figcaption align="middle"> Low Density </figcaption>
+		</td>
+		<td>
+		  <img src="images/7.png" align="middle" width="400px"/>
+		  <figcaption align="middle">High Density </figcaption>
+		</td>
+	  </tr>
+	</table>
+  </div>
+<p>Low damping allows the cloth to oscillate more freely, taking longer to come to rest after being disturbed. It may exhibit exaggerated movements and fluttering. High damping, on the other hand, dampens oscillations more quickly, resulting in smoother and more controlled cloth movement. It settles down faster after being disturbed.</p>
+<div align="middle">
+	<table style="width=100%">
+	  <tr>
+		<td>
+		  <img src="images/10.png" align="middle" width="400px"/>
+		  <figcaption align="middle"> Low Damping </figcaption>
+		</td>
+		<td>
+		  <img src="images/9.png" align="middle" width="400px"/>
+		  <figcaption align="middle">High Damping </figcaption>
+		</td>
+	  </tr>
+	</table>
+  </div>
+  <div align="middle">
+	<table style="width=100%">
+	  <tr>
+		<td>
+		  <img src="images/11.png" align="middle" width="400px"/>
+		  <figcaption align="middle"> scene/pinned4.json </figcaption>
+		</td>
+	  </tr>
+	</table>
+  </div>
+
+
+<h3 align="middle">Part 3: Handling Collisions with Other Objects</h3>
+
+<div align="middle">
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="images/15.png" align="middle" width="400px"/>
+        <figcaption align="middle">Collison w/ Plane.</figcaption>
+      </td>
+      <td>
+        <img src="images/12.png" align="middle" width="400px"/>
+        <figcaption align="middle">KS 500.</figcaption>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <img src="images/13.png" align="middle" width="400px"/>
+        <figcaption align="middle">KS 5000.</figcaption>
+      </td>
+      <td>
+        <img src="images/14.png" align="middle" width="400px"/>
+        <figcaption align="middle">KS 50000.</figcaption>
+      </td>
+    </tr>
+   
+  </table>
+</div>
+
+
+<h3 align="middle">Part 4: Handling Self Collisions</h3>
+
+<p> As the density increases, the cloth's weight increases, causing it to fall and reach a rest state faster. When reaching a final state, the higher-density cloth will pile together in several layers, while the lower-density cloth will have fewer layers on the ground and eventually become flat.
+</p>
+<p>
+	Cloth with higher KS exhibits a stiffer behavior where it maintains its shape when colliding with a plane. 
+	Cloth with lower KS exhibits a more flexible behavior where it shows more deformation when colliding with a plane. 
+</p>
+
+<div align="middle">
+	<table style="width=100%">
+	  <tr>
+		<td>
+		  <img src="images/16.png" align="middle" width="500px"/>
+		  <figcaption align="middle"> KS 50  </figcaption>
+		</td>
+    <td>
+		  <img src="images/20.png" align="middle" width="400px"/>
+		  <figcaption align="middle">KS 50.</figcaption>
+		</td>
+		<td>
+			<img src="images/17.png" align="middle" width="400px"/>
+			<figcaption align="middle">KS 50.</figcaption>
+		  </td>
+	  </tr>	  
+    <tr>
+      <td>
+        <img src="images/18.png" align="middle" width="400px"/>
+        <figcaption align="middle">KS 50000.</figcaption>
+      </td>
+      <td>
+        <img src="images/21.png" align="middle" width="400px"/>
+        <figcaption align="middle">KS 50000.</figcaption>
+      </td>
+	  <td>
+        <img src="images/19.png" align="middle" width="400px"/>
+        <figcaption align="middle">KS 50000.</figcaption>
+      </td>
+    </tr>
+	<p>
+		Cloth with higher KS exhibits a stiffer behavior where it maintains its shape when colliding with a plane. 
+		Cloth with lower KS exhibits a more flexible behavior where it shows more deformation when colliding with a plane. 
+	</p>
+	</table>
+</div>
+	
+
+
+<h3 align="middle">Part 5: Shaders</h3>
+
+<p> A shader program is a set of instructions that runs on the GPU to compute rendering effects, which are also incorporated in changing the appearance of 3D objects.
+	The two types of shaders, vertex shaders and fragment shaders, are where we can observe the creation of lighting and material effects. 
+</p>
+<p>Vertex shaders first handle vertex-level operations and calculate properties for lighting and material at each vertex. 
+	Then the data from vertex shaders are passed onto fragment shaders where the color of each pixel is determined through the interpolation of the passed data. 
+	These computed values are later used to determine lighting and material effects. 
+</p>
+<p>The Blinn-Phong shading model calculates the color of each pixel by analyzing the interaction with light sources. Here, interaction means the changes of the following three fields: ambient, diffuse, and specular. </p>
+<div align="middle">
+	<table style="width=100%">
+	  <tr>
+		<td>
+		  <img src="images/22.png" align="middle" width="400px"/>
+		  <figcaption align="middle">Ambient</figcaption>
+		</td>
+		<td>
+		  <img src="images/23.png" align="middle" width="400px"/>
+		  <figcaption align="middle">Diffuse</figcaption>
+		</td>
+	  </tr>
+	  <br>
+	</table>
+	<table style="width=100%">
+		<tr>
+		  <td>
+			<img src="images/24.png" align="middle" width="400px"/>
+			<figcaption align="middle">Specular</figcaption>
+		  </td>
+		  <td>
+			<img src="images/25.png" align="middle" width="400px"/>
+			<figcaption align="middle">All</figcaption>
+		  </td>
+		</tr>
+		<br>
+	  </table>
+</div>
+<p>Bump mapping and displacement mapping are two different types of mapping.
+Bump mapping creates an illusion as if the material has some wrinkles or creases,
+but displacement mapping actually causes some deformation in the material, exhibiting a completely different shape depending on the amount of displacement. 
+</p>
+<div align="middle">
+	<table style="width=100%">
+		<tr>
+		  <td>
+			<img src="images/32.png" align="middle" width="400px"/>
+			<figcaption align="middle">Bumpy on cloth</figcaption>
+		  </td>
+		</tr>
+		<br>
+	  </table>
+</div>
+<div align="middle">
+	<table style="width=100%">
+	  <tr>
+		<td>
+		  <img src="images/28.png" align="middle" width="400px"/>
+		  <figcaption align="middle">Bumpy w/ -o 16 -a 16</figcaption>
+		</td>
+		<td>
+		  <img src="images/29.png" align="middle" width="400px"/>
+		  <figcaption align="middle">Bumpy w/ -o 128 -a 128</figcaption>
+		</td>
+	  </tr>
+	  <br>
+	</table>
+	<table style="width=100%">
+		<tr>
+		  <td>
+			<img src="images/30.png" align="middle" width="400px"/>
+			<figcaption align="middle">Displacement w/ -o 16 -a 16</figcaption>
+		  </td>
+		  <td>
+			<img src="images/31.png" align="middle" width="400px"/>
+			<figcaption align="middle">Displacement w/ -o 128 -a 128</figcaption>
+		  </td>
+		</tr>
+		<br>
+	  </table>
+</div>
+<p align="middle"> Mirror below </p>
+<div align="middle">
+  <table style="width=100%">
+	<tr>
+	  <td>
+		<img src="images/26.png" align="middle" width="400px"/>
+		<figcaption align="middle">Mirror on Sphere</figcaption>
+	  </td>
+	  <td>
+		<img src="images/27.png" align="middle" width="400px"/>
+		<figcaption align="middle">Mirror on Cloth</figcaption>
+	  </td>
+	</tr>
+	<br>
+  </table>
+</div>
+
+  
+</body>
 </html>
